@@ -1,10 +1,12 @@
 import plotly.express as px
 from shiny.express import input, ui, render
+from shiny import reactive
 from shinywidgets import render_plotly, render_widget
 import pandas as pd
 import palmerpenguins
 import seaborn as sns
 from shinyswatch import theme
+        
 
 penguins_df = palmerpenguins.load_penguins()
 
@@ -113,3 +115,23 @@ with ui.layout_columns():
                 xaxis_title="Body Mass (g)",
             )
             return scatterplot
+
+
+
+
+# Defining Functions
+# ------------------
+# Define a function using the def keyword, followed by the function name, parentheses, and a colon. 
+# The function name should describe what the function does.
+# In the parentheses, specify the inputs needed as arguments the function takes.
+
+    
+# Decorators
+# ----------
+# Use the @ symbol to decorate a function with a decorator.
+# Decorators a concise way of calling a function on a function.
+# We don't typically write decorators, but we often use them.
+
+@reactive.calc
+def filtered_data():
+    return penguins_df
