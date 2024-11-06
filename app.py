@@ -47,7 +47,7 @@ with ui.layout_columns():
         @render.data_frame
         def penguins_table():
             return render.DataTable(
-                penguins_df, selection_mode="row", width="400px", height="250px"
+                filtered_data(), selection_mode="row", width="400px", height="250px"
             )
 
     with ui.card(full_screen=True):
@@ -56,7 +56,7 @@ with ui.layout_columns():
         @render.data_frame
         def penguins_grid():
             return render.DataGrid(
-                penguins_df,
+                filtered_data(),
                 filters=False,
                 selection_mode="row",
                 width="400px",
@@ -71,7 +71,7 @@ with ui.layout_columns():
         @render_widget
         def plot_1():
             histo = px.histogram(
-                penguins_df,
+                filtered_data(),
                 x="body_mass_g",
                 nbins=input.plotly_bin_count(),
                 color="species",
@@ -89,7 +89,7 @@ with ui.layout_columns():
         @render.plot(alt="A Seaborn histogram on penguin body mass in grams.")
         def plot_2():
             ax = sns.histplot(
-                penguins_df,
+                filtered_data(),
                 x="body_mass_g",
                 bins=input.seaborn_bin_count(),
                 hue="species",
@@ -108,7 +108,7 @@ with ui.layout_columns():
         @render_plotly
         def plotly_scatterplot():
             scatterplot = px.scatter(
-                penguins_df, x="body_mass_g", y="bill_length_mm", color="species"
+                filtered_data(), x="body_mass_g", y="bill_length_mm", color="species"
             ).update_layout(
                 title={"text": "Bill Length vs Penguin Mass"},
                 yaxis_title="Bill Length (mm)",
