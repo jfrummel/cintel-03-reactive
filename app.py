@@ -6,7 +6,7 @@ import pandas as pd
 import palmerpenguins
 import seaborn as sns
 from shinyswatch import theme
-        
+
 
 penguins_df = palmerpenguins.load_penguins()
 
@@ -28,6 +28,13 @@ with ui.sidebar(position="left", open="open", bg="f8f8f8"):
         "Species",
         choices=["Adelie", "Gentoo", "Chinstrap"],
         selected="Adelie",
+        inline=False,
+    )
+    ui.input_checkbox_group(
+        "selected_islands_list",
+        "Islands",
+        choices=["Torgersen", "Dream", "Biscoe"],
+        selected=["Torgersen", "Dream", "Biscoe"],
         inline=False,
     )
     ui.hr()
@@ -117,24 +124,26 @@ with ui.layout_columns():
             return scatterplot
 
 
-
-
 # Defining Functions
 # ------------------
-# Define a function using the def keyword, followed by the function name, parentheses, and a colon. 
+# Define a function using the def keyword, followed by the function name, parentheses, and a colon.
 # The function name should describe what the function does.
 # In the parentheses, specify the inputs needed as arguments the function takes.
 
-    
+
 # Decorators
 # ----------
 # Use the @ symbol to decorate a function with a decorator.
 # Decorators a concise way of calling a function on a function.
 # We don't typically write decorators, but we often use them.
 
+
 @reactive.calc
 def filtered_data():
     req(input.selected_species_list())
+    req(input.selected_islands_list())
     isSpeciesMatch = penguins_df["species"].isin(input.selected_species_list())
-    return penguins_df[isSpeciesMatch]
+    islandSelect = penguins_df["island"].isin(input.selected_islands_list())
+    return penguins_df[isSpeciesMatch & islandSelect]
+
     
