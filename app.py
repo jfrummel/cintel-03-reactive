@@ -1,6 +1,6 @@
 import plotly.express as px
 from shiny.express import input, ui, render
-from shiny import reactive
+from shiny import reactive, req
 from shinywidgets import render_plotly, render_widget
 import pandas as pd
 import palmerpenguins
@@ -134,4 +134,7 @@ with ui.layout_columns():
 
 @reactive.calc
 def filtered_data():
-    return penguins_df
+    req(input.selected_species_list())
+    isSpeciesMatch = penguins_df["species"].isin(input.selected_species_list())
+    return penguins_df[isSpeciesMatch]
+    
