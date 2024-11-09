@@ -17,10 +17,12 @@ ui.page_opts(
 with ui.sidebar(position="left", open="open", bg="f8f8f8"):
     ui.h2("Sidebar", style="text-align: center;", bg="#0a0a0a")
     ui.input_selectize(
-        "selected_attribute",
+        "selected_attribute_list",
         "Attribute",
-        choices=["bill_length_mm", "bill_depth_mm", "flipper_length_mm", "body_mass_g"],
+        choices={"bill_length_mm": "Bill Length (mm)", "bill_depth_mm": "Bill Depth (mm)", "flipper_length_mm": "Flipper Length (mm)", "body_mass_g": "Body Mass (g)"},
     )
+
+    
     ui.input_numeric("plotly_bin_count", "Plotly Count", value=25)
     ui.input_slider("seaborn_bin_count", "Seaborn Bins", 1, 100, 50)
     ui.input_checkbox_group(
@@ -79,13 +81,14 @@ with ui.layout_columns():
         def plot_1():
             histo = px.histogram(
                 filtered_data(),
-                x="body_mass_g",
+                x=input.selected_attribute_list(),
                 nbins=input.plotly_bin_count(),
                 color="species",
+                
             ).update_layout(
-                title={"text": "Penguin Mass", "x": 0.5},
+                title={"text": "Palmer Penguins", "x": 0.5},
                 yaxis_title="Count",
-                xaxis_title="Body Mass (g)",
+                xaxis_title=input.selected_attribute_list(),
             )
 
             return histo
@@ -97,13 +100,14 @@ with ui.layout_columns():
         def plot_2():
             ax = sns.histplot(
                 filtered_data(),
-                x="body_mass_g",
+                x=input.selected_attribute_list(),
                 bins=input.seaborn_bin_count(),
                 hue="species",
                 element="step",
+                legend=True
             )
             ax.set_title("Palmer Penguins")
-            ax.set_xlabel("Mass (g)")
+            ax.set_xlabel(input.selected_attribute_list())
             ax.set_ylabel("Count")
             return ax
 
@@ -142,8 +146,8 @@ with ui.layout_columns():
 def filtered_data():
     req(input.selected_species_list())
     req(input.selected_islands_list())
+    req(input.selected_attribute_list())
     isSpeciesMatch = penguins_df["species"].isin(input.selected_species_list())
     islandSelect = penguins_df["island"].isin(input.selected_islands_list())
-    return penguins_df[isSpeciesMatch & islandSelect]
-
-    
+    selectedAttribute = penguins_df[input.selected_attribute_list()]
+    return penguins_df[isSpeciesMatch & islandSelect & selectedAttribute]
